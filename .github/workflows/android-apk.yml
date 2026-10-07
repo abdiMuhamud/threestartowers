@@ -1,0 +1,86 @@
+name: Android APK
+
+# Builds the mobile app into an installable APK.
+#   - Push a tag like v1.0.1  -> builds ThreeStarTowers-1.0.1.apk and publishes it as a GitHub Release.
+#   - Run manually (Actions tab) -> builds a test APK, downloadable from the run's Artifacts.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The tag is the source of truth for the version; the run number gives every
+      # build a higher versionCode so a newer APK always installs over an older one.
+      - name: Set app version
+        id: version
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+            LABEL="$VERSION"
+          else
+            VERSION="$(node -p "require('./app.json').expo.version")"
+            LABEL="$VERSION-test.$GITHUB_RUN_NUMBER"
+          fi
+          node -e "
+            const fs = require('fs');
+            const app = JSON.parse(fs.readFileSync('app.json', 'utf8'));
+            app.expo.version = '$VERSION';
+            app.expo.android.versionCode = $GITHUB_RUN_NUMBER;
+            fs.writeFileSync('app.json', JSON.stringify(app, null, 2));
+          "
+          echo "label=$LABEL" >> "$GITHUB_OUTPUT"
+
+      - name: Generate Android project
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Build APK
+        working-directory: mobile/android
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Name the APK
+        id: apk
+        run: |
+          APK="ThreeStarTowers-${{ steps.version.outputs.label }}.apk"
+          cp android/app/build/outputs/apk/release/app-release.apk "$RUNNER_TEMP/$APK"
+          echo "name=$APK" >> "$GITHUB_OUTPUT"
+          echo "path=$RUNNER_TEMP/$APK" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.apk.outputs.name }}
+          path: ${{ steps.apk.outputs.path }}
+
+      - name: Publish GitHub Release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "${{ steps.apk.outputs.path }}" \
+            --title "Three Star Towers $GITHUB_REF_NAME" \
+            --generate-notes
