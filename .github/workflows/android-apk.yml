@@ -109,7 +109,13 @@ jobs:
         if: github.ref_type == 'tag'
         env:
           GH_TOKEN: ${{ github.token }}
+        # Safe to re-run: reuses a release left behind by a failed attempt and retries uploads.
         run: |
-          gh release create "$GITHUB_REF_NAME" "${{ steps.apk.outputs.dir }}"/*.apk \
-            --title "Three Star Towers $GITHUB_REF_NAME" \
-            --generate-notes
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 ||
+            gh release create "$GITHUB_REF_NAME" --draft --title "Three Star Towers $GITHUB_REF_NAME" --generate-notes
+          for attempt in 1 2 3 4; do
+            gh release upload "$GITHUB_REF_NAME" "${{ steps.apk.outputs.dir }}"/*.apk --clobber && break
+            [[ $attempt == 4 ]] && exit 1
+            sleep 20
+          done
+          gh release edit "$GITHUB_REF_NAME" --draft=false --latest
