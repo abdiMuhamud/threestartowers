@@ -1,7 +1,8 @@
 name: Android APK
 
 # Builds the mobile app into an installable APK.
-#   - Push a tag like v1.0.1  -> builds ThreeStarTowers-1.0.1.apk and publishes it as a GitHub Release.
+#   - Push a tag like v1.0.1  -> builds ThreeStarTowers-1.0.1.apk (plus an -older-phones.apk for
+#     32-bit devices) and publishes them as a GitHub Release.
 #   - Run manually (Actions tab) -> builds a test APK, downloadable from the run's Artifacts.
 on:
   push:
@@ -59,28 +60,56 @@ jobs:
       - name: Generate Android project
         run: npx expo prebuild --platform android --no-install
 
-      - name: Build APK
-        working-directory: mobile/android
-        run: ./gradlew assembleRelease --no-daemon
+      # One APK per processor type instead of a single universal file: the universal
+      # APK carried four copies of the native code and came out over 100 MB.
+      - name: Split APK by processor type
+        run: |
+          cat >> android/app/build.gradle <<'EOF'
 
-      - name: Name the APK
+          android {
+              splits {
+                  abi {
+                      enable true
+                      reset()
+                      include "arm64-v8a", "armeabi-v7a"
+                      universalApk false
+                  }
+              }
+          }
+          EOF
+
+      - name: Build APKs
+        working-directory: mobile/android
+        run: >
+          ./gradlew assembleRelease --no-daemon
+          -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
+          -Pexpo.useLegacyPackaging=true
+
+      # arm64 is the main download (phones from roughly 2018 on); the 32-bit build
+      # covers older and entry-level phones.
+      - name: Name the APKs
         id: apk
         run: |
-          APK="ThreeStarTowers-${{ steps.version.outputs.label }}.apk"
-          cp android/app/build/outputs/apk/release/app-release.apk "$RUNNER_TEMP/$APK"
-          echo "name=$APK" >> "$GITHUB_OUTPUT"
-          echo "path=$RUNNER_TEMP/$APK" >> "$GITHUB_OUTPUT"
+          OUT=android/app/build/outputs/apk/release
+          ls -lh "$OUT"
+          MAIN="ThreeStarTowers-${{ steps.version.outputs.label }}.apk"
+          OLD="ThreeStarTowers-${{ steps.version.outputs.label }}-older-phones.apk"
+          mkdir -p "$RUNNER_TEMP/apk"
+          cp "$OUT"/*arm64-v8a*.apk "$RUNNER_TEMP/apk/$MAIN"
+          cp "$OUT"/*armeabi-v7a*.apk "$RUNNER_TEMP/apk/$OLD"
+          ls -lh "$RUNNER_TEMP/apk"
+          echo "dir=$RUNNER_TEMP/apk" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.apk.outputs.name }}
-          path: ${{ steps.apk.outputs.path }}
+          name: ThreeStarTowers-${{ steps.version.outputs.label }}
+          path: ${{ steps.apk.outputs.dir }}
 
       - name: Publish GitHub Release
         if: github.ref_type == 'tag'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "${{ steps.apk.outputs.path }}" \
+          gh release create "$GITHUB_REF_NAME" "${{ steps.apk.outputs.dir }}"/*.apk \
             --title "Three Star Towers $GITHUB_REF_NAME" \
             --generate-notes
