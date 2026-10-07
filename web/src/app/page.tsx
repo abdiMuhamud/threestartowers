@@ -5,6 +5,7 @@ import PropertyCard, { img } from "@/components/PropertyCard";
 import LocationsExplorer from "@/components/LocationsExplorer";
 import EnquiryForm from "@/components/EnquiryForm";
 import Logo from "@/components/Logo";
+import StoreBadges from "@/components/StoreBadges";
 import { company, formatKes, formatKesShort, fromPrice, properties } from "@/content/properties";
 
 const flagship = properties[0];
@@ -288,14 +289,7 @@ export default function Home() {
               <li>Maps and one-tap directions to every site</li>
               <li>Save favourites and book a viewing in seconds</li>
             </ul>
-            <div className="stores">
-              <span className="store">
-                <small>Coming soon to the</small>App Store
-              </span>
-              <span className="store">
-                <small>Coming soon to</small>Google Play
-              </span>
-            </div>
+            <StoreBadges />
           </div>
           <div className="phone-wrap" data-reveal data-tilt="10">
             <div className="phone">
