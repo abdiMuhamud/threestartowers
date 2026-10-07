@@ -51,7 +51,7 @@ export const company = {
   phones: ["+254 724 446 444", "+254 735 577 455"],
   whatsapp: "254724446444",
   emails: ["sales@heimatconsult.co.ke", "info@heimatconsult.co.ke"],
-  website: "www.threestartowersltd.co.ke",
+  website: "threestartowers.vercel.app",
   salesOffice: "BP Plaza (1st floor), Umoja Rd, Nyali, Mombasa",
   partners: [
     { role: "Developer", name: "Three Star Towers Limited" },
