@@ -1961,6 +1961,22 @@ td.price {
   box-shadow: var(--shadow);
 }
 
+/* Grid children may shrink below their content width (wide tables scroll inside instead). */
+.plans > *,
+.two-col > *,
+.flagship__grid > *,
+.hero__grid > *,
+.contact__grid > *,
+.app__grid > *,
+.amenities > *,
+.detail-hero__grid > * {
+  min-width: 0;
+}
+
+.table-scroll table {
+  min-width: 460px;
+}
+
 /* ───────── Responsive ───────── */
 
 @media (max-width: 980px) {
@@ -2102,6 +2118,37 @@ td.price {
 
   .brand__text {
     font-size: 0.95rem;
+  }
+
+  .plan-card {
+    padding: 20px;
+  }
+
+  .plan-card h3 span {
+    display: block;
+    margin: 4px 0 0;
+  }
+
+  .btn {
+    padding: 15px 24px;
+  }
+
+  .form__actions .btn,
+  .hero__cta .btn {
+    flex: 1 1 auto;
+  }
+
+  .nearby li {
+    font-size: 0.95rem;
+  }
+
+  .phone {
+    width: 250px;
+  }
+
+  .page-head,
+  .detail-hero {
+    padding-top: 120px;
   }
 
   .chip--price strong {
