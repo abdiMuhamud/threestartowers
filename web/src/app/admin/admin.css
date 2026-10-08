@@ -311,3 +311,7 @@
   font-size: 0.9rem;
   margin-top: 10px;
 }
+
+.admin-login h1 + .admin-note {
+  margin-top: 18px;
+}
