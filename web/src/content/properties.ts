@@ -18,6 +18,18 @@ export type UnitType = {
   pricing: { floors: string; price: number }[];
 };
 
+export type TourScene = {
+  id: string;
+  title: string;
+  /** Image key, resolved per platform. */
+  image: string;
+  /**
+   * "360": a full equirectangular panorama (2:1), viewable all the way round and in a VR headset.
+   * "wide": an ordinary still render, shown as a limited look-around until a 360 render replaces it.
+   */
+  kind: "360" | "wide";
+};
+
 export type Property = {
   slug: string;
   name: string;
@@ -37,6 +49,8 @@ export type Property = {
   nearby: { place: string; time: string }[];
   hero?: string;
   gallery: { image: string; caption: string }[];
+  /** Rooms offered in the virtual tour, in walking order. */
+  tour?: TourScene[];
   paymentPlan?: { label: string; percent: number; note: string }[];
   priceNote?: string;
 };
@@ -174,6 +188,12 @@ export const properties: Property[] = [
       { image: "rosewood-stadium/bedroom", caption: "Master bedroom" },
       { image: "rosewood-stadium/bedroom-suite", caption: "Master suite" },
       { image: "rosewood-stadium/aerial-wide", caption: "The neighbourhood" },
+    ],
+    tour: [
+      { id: "lounge", title: "Lounge", image: "rosewood-stadium/lounge", kind: "wide" },
+      { id: "dining", title: "Dining", image: "rosewood-stadium/dining", kind: "wide" },
+      { id: "kitchen", title: "Kitchen", image: "rosewood-stadium/kitchen", kind: "wide" },
+      { id: "bedroom", title: "Master bedroom", image: "rosewood-stadium/bedroom", kind: "wide" },
     ],
     paymentPlan: [
       { label: "Deposit", percent: 30, note: "On booking" },

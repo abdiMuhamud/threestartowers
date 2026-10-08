@@ -1,0 +1,118 @@
+.tour {
+  position: fixed;
+  inset: 0;
+  background: #120a07;
+  color: #f8efdc;
+  font-size: 15px;
+}
+
+.tour__view {
+  position: absolute;
+  inset: 0;
+}
+
+.tour__loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #cdbd9f;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+.tour__top,
+.tour__bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 16px clamp(14px, 3vw, 28px);
+  pointer-events: none;
+}
+
+.tour__top {
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(180deg, rgba(18, 10, 7, 0.75), transparent);
+}
+
+.tour__bottom {
+  bottom: 0;
+  padding-bottom: max(18px, env(safe-area-inset-bottom));
+  background: linear-gradient(0deg, rgba(18, 10, 7, 0.8), transparent);
+}
+
+.tour__top > *,
+.tour__scenes {
+  pointer-events: auto;
+}
+
+.tour__title {
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.tour__title strong {
+  font-family: var(--font-display), serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+
+.tour__title span {
+  font-size: 0.78rem;
+  color: #cdbd9f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tour__pill,
+.tour__scenes button {
+  font: inherit;
+  font-size: 0.85rem;
+  color: #f8efdc;
+  white-space: nowrap;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(236, 214, 145, 0.35);
+  background: rgba(31, 19, 14, 0.6);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.tour__pill.is-on,
+.tour__pill--gold,
+.tour__scenes button.is-on {
+  background: linear-gradient(135deg, #e3c873, var(--gold));
+  border-color: transparent;
+  color: var(--espresso);
+  font-weight: 400;
+}
+
+.tour__hint {
+  font-size: 0.78rem;
+  color: #cdbd9f;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.tour__scenes {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  justify-content: safe center;
+  scrollbar-width: none;
+}
+
+.tour__scenes::-webkit-scrollbar {
+  display: none;
+}

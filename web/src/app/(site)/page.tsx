@@ -6,6 +6,7 @@ import LocationsExplorer from "@/components/LocationsExplorer";
 import EnquiryForm from "@/components/EnquiryForm";
 import Logo from "@/components/Logo";
 import StoreBadges from "@/components/StoreBadges";
+import TourIcon from "@/components/TourIcon";
 import { company, formatKes, formatKesShort, fromPrice, properties } from "@/content/properties";
 
 const flagship = properties[0];
@@ -153,9 +154,14 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <Link href={`/developments/${flagship.slug}`} className="btn btn--brown">
-              View floor plans &amp; pricing
-            </Link>
+            <div className="hero__cta" style={{ margin: 0 }}>
+              <Link href={`/developments/${flagship.slug}`} className="btn btn--brown">
+                View floor plans &amp; pricing
+              </Link>
+              <Link href={`/tour/${flagship.slug}`} className="btn btn--ghost">
+                <TourIcon /> Virtual tour
+              </Link>
+            </div>
           </div>
         </div>
       </section>

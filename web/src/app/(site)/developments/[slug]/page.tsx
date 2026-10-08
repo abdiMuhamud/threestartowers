@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import MapView from "@/components/MapView";
 import EnquiryForm from "@/components/EnquiryForm";
 import { ComingSoonArt, img } from "@/components/PropertyCard";
+import TourIcon from "@/components/TourIcon";
 import {
   directionsLink,
   formatKes,
@@ -56,9 +57,16 @@ export default async function Development({ params }: Props) {
               {p.totalUnits && <span>{p.totalUnits} residences</span>}
               <span>{p.address}</span>
             </div>
-            <a href="#enquire" className="btn btn--brown">
-              {selling ? "Book a viewing" : "Register interest"}
-            </a>
+            <div className="hero__cta" style={{ margin: 0 }}>
+              <a href="#enquire" className="btn btn--brown">
+                {selling ? "Book a viewing" : "Register interest"}
+              </a>
+              {p.tour && (
+                <Link href={`/tour/${p.slug}`} className="btn btn--ghost">
+                  <TourIcon /> Virtual tour
+                </Link>
+              )}
+            </div>
           </div>
           {p.hero ? (
             <div className="detail-hero__media hero__in" data-tilt="7" style={{ animationDelay: "0.2s" }}>

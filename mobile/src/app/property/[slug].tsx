@@ -103,6 +103,16 @@ export default function PropertyDetails() {
                 </Text>
               </View>
               <Sheen width={slideW} delay={900} />
+              {p.tour && (
+                <Pressable
+                  style={styles.tour}
+                  onPress={() => router.push({ pathname: "/tour/[slug]", params: { slug: p.slug } })}
+                  accessibilityLabel="Open virtual tour"
+                >
+                  <Ionicons name="glasses-outline" size={18} color={colors.espresso} />
+                  <Text style={styles.tourText}>Virtual tour</Text>
+                </Pressable>
+              )}
             </>
           ) : (
             <ComingSoonArt area={p.area} />
@@ -239,6 +249,19 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(252,249,244,0.9)",
   },
   counterText: { fontFamily: fonts.body, fontSize: 13, color: colors.ink },
+  tour: {
+    position: "absolute",
+    right: 14,
+    bottom: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: radius.pill,
+    backgroundColor: colors.gold,
+  },
+  tourText: { fontFamily: fonts.medium, fontSize: 13, color: colors.espresso },
   body: { backgroundColor: colors.cream, paddingHorizontal: 22, paddingTop: 18, marginTop: 4 },
   statusRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.muted },
