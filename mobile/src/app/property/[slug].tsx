@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Linking,
@@ -20,6 +20,7 @@ import { Chip, ComingSoonArt, specChips } from "@/components/PropertyCard";
 import { FadeInUp, PressableScale, Sheen } from "@/components/motion";
 import { images } from "@/content/images";
 import { company, directionsLink, formatKes, formatKesShort, fromPrice, getProperty, whatsappLink } from "@/content/properties";
+import { reportPropertyView } from "@/lib/api";
 import { useSaved } from "@/lib/saved";
 import { colors, fonts, radius } from "@/theme";
 
@@ -42,6 +43,10 @@ export default function PropertyDetails() {
   const { isSaved, toggle } = useSaved();
   const scrollY = useRef(new Animated.Value(0)).current;
   const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    if (p) reportPropertyView(p.slug);
+  }, [p]);
 
   if (!p) {
     return (

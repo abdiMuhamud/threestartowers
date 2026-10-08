@@ -2,9 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import Motion from "@/components/Motion";
 import { company } from "@/content/properties";
 
 const display = Cormorant_Garamond({
@@ -39,10 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>
       <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-        <Motion />
+        {children}
       </body>
     </html>
   );

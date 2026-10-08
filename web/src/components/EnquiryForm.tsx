@@ -4,14 +4,26 @@ import { useState } from "react";
 import { company, properties, whatsappLink } from "@/content/properties";
 
 /**
- * There is no backend yet: the form composes a message and hands it to
- * WhatsApp or the visitor's email app, addressed to the sales team.
+ * Composes a message for WhatsApp or the visitor's email app. When a name and
+ * phone number are given, the enquiry is also saved so it shows up in /admin.
  */
 export default function EnquiryForm({ defaultSlug }: { defaultSlug?: string }) {
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [slug, setSlug] = useState(defaultSlug ?? properties[0].slug);
   const [interest, setInterest] = useState("Book a viewing");
   const [note, setNote] = useState("");
+
+  // Record the enquiry for the sales team, then let the link open WhatsApp or email as usual.
+  const saveLead = () => {
+    if (!name.trim() || phone.replace(/\D/g, "").length < 7) return;
+    fetch("/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, phone, source: "web", propertySlug: slug, interest, note }),
+      keepalive: true,
+    }).catch(() => {});
+  };
 
   const property = properties.find((p) => p.slug === slug)!;
   const message =
@@ -27,6 +39,17 @@ export default function EnquiryForm({ defaultSlug }: { defaultSlug?: string }) {
       <label>
         Your name
         <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" autoComplete="name" />
+      </label>
+      <label>
+        Phone number
+        <input
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="07xx xxx xxx"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+        />
       </label>
       <label>
         Residence
@@ -52,13 +75,17 @@ export default function EnquiryForm({ defaultSlug }: { defaultSlug?: string }) {
         <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} placeholder="Preferred floor, unit type, timing…" />
       </label>
       <div className="form__actions">
-        <a className="btn btn--gold" href={whatsappLink(message)} target="_blank" rel="noopener">
+        <a className="btn btn--gold" href={whatsappLink(message)} target="_blank" rel="noopener" onClick={saveLead}>
           Send on WhatsApp
         </a>
-        <a className="btn btn--ghost" href={mailto}>
+        <a className="btn btn--ghost" href={mailto} onClick={saveLead}>
           Send by email
         </a>
       </div>
+      <p className="form__consent">
+        By sending, you agree that Three Star Towers may contact you about this enquiry. See our{" "}
+        <a href="/privacy">privacy notice</a>.
+      </p>
     </form>
   );
 }

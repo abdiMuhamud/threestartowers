@@ -36,6 +36,20 @@ npm run dev
 
 Maps use Leaflet with OpenStreetMap tiles (no API key). The enquiry form has no backend: it opens WhatsApp or the visitor's email app with a pre-filled message to sales.
 
+### Leads, installs and the admin area
+
+The app and the enquiry form post to `/api/leads`, `/api/installs` and `/api/events`; `/admin` shows the
+results (sign-in required, hidden from search engines). Production needs these environment variables in Vercel:
+
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | Postgres connection. Created for you by Vercel > Storage > Neon Postgres. |
+| `ADMIN_USER`, `ADMIN_PASSWORD` | The admin sign-in. Never commit these; the repository is public. |
+| `SESSION_SECRET` | Any long random string; signs the admin session cookie. |
+
+Tables are created automatically on first use. Locally, with none of these set, an in-process database is
+stored in `web/.data` and the sign-in is `admin` / `admin`.
+
 ## Mobile app
 
 ```bash

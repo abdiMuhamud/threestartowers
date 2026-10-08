@@ -8,10 +8,41 @@ import { Stack } from "expo-router/stack";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import Welcome from "@/components/Welcome";
+import { reportLaunch } from "@/lib/api";
+import { ProfileProvider, useProfile } from "@/lib/profile";
 import { SavedProvider } from "@/lib/saved";
 import { colors } from "@/theme";
 
 SplashScreen.preventAutoHideAsync();
+
+function Screens({ fontsReady }: { fontsReady: boolean }) {
+  const { profile } = useProfile();
+  const ready = fontsReady && profile !== undefined;
+
+  useEffect(() => {
+    if (ready) SplashScreen.hideAsync();
+  }, [ready]);
+
+  if (!ready) return null;
+
+  // Visitors register once, on first launch, before the listings open.
+  if (profile === null) {
+    return (
+      <>
+        <StatusBar style="light" />
+        <Welcome />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <StatusBar style="dark" />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.cream } }} />
+    </>
+  );
+}
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -24,15 +55,14 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (loaded || error) SplashScreen.hideAsync();
-  }, [loaded, error]);
-
-  if (!loaded && !error) return null;
+    reportLaunch();
+  }, []);
 
   return (
-    <SavedProvider>
-      <StatusBar style="dark" />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.cream } }} />
-    </SavedProvider>
+    <ProfileProvider>
+      <SavedProvider>
+        <Screens fontsReady={loaded || error !== null} />
+      </SavedProvider>
+    </ProfileProvider>
   );
 }
