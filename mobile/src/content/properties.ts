@@ -67,12 +67,52 @@ export const company = {
   emails: ["sales@heimatconsult.co.ke", "info@heimatconsult.co.ke"],
   website: "www.threestartowers.com",
   salesOffice: "BP Plaza (1st floor), Umoja Rd, Nyali, Mombasa",
-  partners: [
-    { role: "Developer", name: "Three Star Towers Limited" },
-    { role: "Project management", name: "Heimat Consult Ltd" },
-    { role: "Contractor", name: "Spearlead Construction Limited" },
-  ],
 };
+
+export type TeamMember = {
+  role: string;
+  name: string;
+  /** "tst" draws the Three Star Towers mark; anything else is an image key. */
+  logo: string;
+  details: { kind: "place" | "post" | "web" | "phone" | "email"; text: string }[];
+};
+
+/** The companies behind the developments, as shown in "The Project Team". */
+export const projectTeam: TeamMember[] = [
+  {
+    role: "Developers",
+    name: "Three Star Towers Limited",
+    logo: "tst",
+    details: [
+      { kind: "place", text: "Makadara, Mombasa" },
+      { kind: "post", text: "P.O. Box 86499-80100" },
+      { kind: "web", text: "www.threestartowers.com" },
+      { kind: "phone", text: "+254 724 446 444 | +254 735 577 455" },
+    ],
+  },
+  {
+    role: "Project management",
+    name: "Three Star Towers Limited",
+    logo: "tst",
+    details: [
+      { kind: "place", text: "Makadara, Mombasa" },
+      { kind: "phone", text: "+254 724 446 444 | +254 735 577 455" },
+      { kind: "email", text: "info@threestartowers.com" },
+      { kind: "web", text: "www.threestartowers.com" },
+    ],
+  },
+  {
+    role: "Contractors",
+    name: "Spearlead Construction Limited",
+    logo: "spearlead-logo",
+    details: [
+      { kind: "place", text: "Jomo Kenyatta Avenue, Mombasa" },
+      { kind: "phone", text: "+254 722 242 006 | +254 733 223 232" },
+      { kind: "post", text: "P.O. Box 86499-80100" },
+      { kind: "email", text: "spearleadconstructionltd@gmail.com" },
+    ],
+  },
+];
 
 const comingSoon = (area: string) => [
   `Rosewood is coming to ${area}. Floor plans, unit mix and pricing for this residence are being finalised.`,

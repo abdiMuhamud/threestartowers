@@ -5,6 +5,7 @@ import PropertyCard, { img } from "@/components/PropertyCard";
 import LocationsExplorer from "@/components/LocationsExplorer";
 import EnquiryForm from "@/components/EnquiryForm";
 import Logo from "@/components/Logo";
+import ProjectTeam from "@/components/ProjectTeam";
 import StoreBadges from "@/components/StoreBadges";
 import TourIcon from "@/components/TourIcon";
 import { company, formatKes, formatKesShort, fromPrice, properties } from "@/content/properties";
@@ -277,6 +278,19 @@ export default function Home() {
             Example: a 2-bedroom residence on floors 1–5 at {formatKes(6_500_000)} is {formatKes(1_950_000)} deposit,{" "}
             {formatKes(3_900_000)} over construction and {formatKes(650_000)} at handover. {flagship.priceNote}
           </p>
+        </div>
+      </section>
+
+      {/* ───────── Project team ───────── */}
+      <section className="section section--dark" id="team">
+        <div className="container">
+          <header className="section__head" data-reveal>
+            <span className="eyebrow eyebrow--gold">Who is building it</span>
+            <h2>
+              The Project <em className="shimmer">Team</em>
+            </h2>
+          </header>
+          <ProjectTeam />
         </div>
       </section>
 
