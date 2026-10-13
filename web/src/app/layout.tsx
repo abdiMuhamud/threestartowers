@@ -18,6 +18,7 @@ const body = Jost({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(`https://${company.website}`),
   title: {
     default: `${company.shortName} — Premium residences in Mombasa`,
     template: `%s — ${company.shortName}`,
